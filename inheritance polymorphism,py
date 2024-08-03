@@ -1,0 +1,28 @@
+class Animal():
+    def __init__(self,name):
+   
+        self.m=1
+        self.name=name
+    def speak2(self):
+        print("hey")
+        # raise NotImplementedError("Subclass must be implemented")
+# m=Animal('fed')
+# m.speak()
+
+
+class Dog(Animal):
+    # def __init__(self,*args,**kwargs)->None:
+    #     pass
+        # print(*args,**kwargs)
+        # super().__init__(self,*args,**kwargs)
+      
+        
+    def speak(self):
+        return self.name+"  says woof!"
+class Cat(Animal):
+    def speak(self):
+        return self.name+"  says meow!"
+fido=Dog("dogg")
+print(fido.speak())
+print(fido.speak2())
+print(fido.m)
