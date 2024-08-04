@@ -28,7 +28,7 @@ class Cylinder:
         return volumn
     
     def surface_area(self):
-        area=3.14159*self.radius*self.radius
+        area=3.14*self.radius**2*2+3.14*self.radius**2*2
         print(area)
         return area
 c = Cylinder(2,3)
