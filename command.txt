@@ -5,3 +5,10 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/shuan3/test.git
 git push -u origin main
+
+
+
+
+
+
+https://github.com/Pierian-Data/Complete-Python-3-Bootcamp/blob/master/13-Web-Scraping/02-Web-Scraping-Exercise-Solutions.ipynb
