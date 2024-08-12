@@ -1,6 +1,6 @@
 class Animal():
     def __init__(self,name):
-   
+
         self.m=1
         self.name=name
     def speak2(self):
@@ -15,8 +15,8 @@ class Dog(Animal):
     #     pass
         # print(*args,**kwargs)
         # super().__init__(self,*args,**kwargs)
-      
-        
+
+
     def speak(self):
         return self.name+"  says woof!"
 class Cat(Animal):

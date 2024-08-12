@@ -1,7 +1,7 @@
 import ipywidgets as widgets
 
 
-
-w=widgets.IntSlider()
+w = widgets.IntSlider()
 from IPython.display import display
+
 display(w)

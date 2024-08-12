@@ -16,3 +16,24 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+
+
+# name: lint
+# on:
+#    push:
+#       branches:
+#       - main
+#     # workflow_dispatch:
+
+
+# concurrency:
+#    group: ${{github.ref}}
+#    cancel-in-progress: true
+
+# job:
+#    init:
+#       name: Initiation
+#       runs-on: ghes-runners-standard
+#       outputs:
+#         language: python
+#         gh_cache_

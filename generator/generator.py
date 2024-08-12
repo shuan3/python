@@ -8,6 +8,8 @@
 def create_cubes(n):
     for x in range(n):
         yield x**3
+
+
 # list(create_cubes(10))
 for x in create_cubes(10):
     print(x)
@@ -18,10 +20,11 @@ def gencubes(n):
     for num in range(n):
         yield num**3
 
+
 for x in gencubes(10):
     print(x)
 
-s="hello"
-ss=iter(s)
+s = "hello"
+ss = iter(s)
 print(next(ss))
 print(next(ss))
