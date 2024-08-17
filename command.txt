@@ -12,3 +12,7 @@ pre-commit run --all-files
 
 
 https://github.com/Pierian-Data/Complete-Python-3-Bootcamp/blob/master/13-Web-Scraping/02-Web-Scraping-Exercise-Solutions.ipynb
+
+
+
+git add .pre-commit-config.yaml
