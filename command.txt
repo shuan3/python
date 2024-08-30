@@ -16,3 +16,8 @@ https://github.com/Pierian-Data/Complete-Python-3-Bootcamp/blob/master/13-Web-Sc
 
 
 git add .pre-commit-config.yaml
+
+
+set up python library
+pip config set global.cert C:Users/ID/XXX.cer
+pip config set global.index-url https://......
