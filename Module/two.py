@@ -9,6 +9,11 @@ def two_on_two():
     print("two on two")
 
 
+if hasattr(one, "feed"):
+    print("?yes")
+    print(getattr(one, "feed"))
+
+
 if __name__ == "__main__":
     two()
 else:

@@ -1,4 +1,6 @@
 class one:
+    feed = "lol"
+
     def one():
         print("running one.py")
 
