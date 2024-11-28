@@ -1,5 +1,4 @@
-from Module.attribute.pipelines import feeds
-
+from pipelines import feeds
 
 if hasattr(feeds, "feed_1"):
     print("1.Yes")
@@ -14,8 +13,11 @@ if hasattr(feeds, "feed_1"):
         else:
             setattr(feed, "engine", "pandas")
             print(feed.engine)
-            # ll=getattr(feed_config,"feed_name")
-            # print(ll)
+
+# if hasattr(feeds, "feed_1"):
+#     print("Yes")
 # from Module.attribute.pipelines.feeds.finance.feed_1 import config
 
 # print(config)
+
+# print(pwd)
