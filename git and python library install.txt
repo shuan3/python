@@ -22,3 +22,63 @@ set up python library
 pip config set global.cert C:Users/ID/XXX.cer
 pip config set global.index-url https://......
 pip config set global.extra-index-url http://....
+
+
+
+
+
+pip install <package-name>: Installs the package and shows the output of the module being installed.
+poetry install: Installs the dependencies and shows the modules being installed.
+pip show <package-name>: Shows information about an installed package.
+pip freeze: Lists all installed modules and their versions.
+pip list: Lists all installed packages.
+Verbose mode (-v): Provides more detailed output for pip install.
+
+
+import importlib
+
+module_name = "math"  # This could be dynamically set
+math = importlib.import_module(module_name)
+
+
+import numpy as np
+print(dir(np))
+
+import pkgutil
+import numpy
+
+for module_info in pkgutil.iter_modules(numpy.__path__):
+    print(module_info.name)
+
+
+# List files inside a package
+import os
+import package_name
+
+package_path = os.path.dirname(package_name.__file__)  # Get package path
+print(f"Package location: {package_path}")
+
+# List files in the package directory
+print("Files in the package:")
+print(os.listdir(package_path))
+
+import pkgutil
+import package_name
+
+print(f"Modules and submodules in '{package_name.__name__}':")
+for module_info in pkgutil.walk_packages(package_name.__path__):
+    print(module_info.name)
+
+
+
+import importlib.resources as resources
+import package_name
+
+with resources.path(package_name, "__init__.py") as path:
+    print(f"Path to the __init__.py file: {path}")
+
+# Iterate over files in a package
+package_path = package_name.__path__[0]
+for root, dirs, files in os.walk(package_path):
+    for file in files:
+        print(os.path.join(root, file))

@@ -1,0 +1,63 @@
+show dbs
+
+db.products.insertOne({name:"A book",price: 12.99})
+
+db.products.find()
+db.products.find().pretty()
+
+MongoDB Server--> Storage Engine -->read and write data to files Databse
+                         --> Memory Read and write data into Memory
+
+
+db.flightData.insertOne({"name":"lol"})
+
+
+
+
+# Create
+db.products.insertOne(data,option)
+db.insertMany(data,options)
+
+# Read
+find(filter,options)
+findOne(filter,options)
+
+# Update
+updateOne(filter,data,options)
+updateMany(filter,data,options)
+replaceOne(filter,data,options)
+
+#Delete
+DeleteOne(filter,options)
+deleteMany(filter,optoins)
+db.flightData.deleteOne({"name":"lol"})
+
+
+db.flightData.updateOne({"name":"lol"},{$set:{"marker":"delete"}})
+# Update all records
+db.flightData.updateMany({},{$set:{"marker":"ToBeDelete"}})
+db.flightData.deleteMany({"marker":"ToBeDelete"})
+
+# insertMany
+db.flightData.insertMany([{},{}])
+
+# find
+db.flightData.find({"name":"lol"})
+# greater than 1000
+db.flightData.find({"name":{$gt:1000}})
+# this will overwrite exiting document
+db.flightData.update({_id:"123"},{"marker":"XXToBeDelete"})
+
+db.flightData.replaceOne({_id:"123"},{"marker":"ToBeDelete"})
+
+
+db.flightData.insertOne({"name":"test",_id:"123"})
+
+db.passengers.find()forEach((passengerData)=>{printjson(passengerData)})
+
+db.passengers.find({},{name: 1}).pretty()
+db.passengers.find({},{name: 1,_id:0}).pretty()
+
+db.passengers.findOne({"name":1}).age
+# drill into nexted filter
+db.passengers.findOne({"name.age":"lol"})
