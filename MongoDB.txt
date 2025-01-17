@@ -1,4 +1,9 @@
+# see all schema above collection
 show dbs
+use flights
+show collection
+# show total records
+db.collection_name.countDocuments({})
 
 db.products.insertOne({name:"A book",price: 12.99})
 
@@ -26,6 +31,30 @@ findOne(filter,options)
 updateOne(filter,data,options)
 updateMany(filter,data,options)
 replaceOne(filter,data,options)
+db.flightData.updateOne({"name":"lol"},{$set:{"marker":"delete"}})
+# Update all records
+db.flightData.updateMany({_id:ObjectId("dsds")},{$set:{"marker":"ToBeDelete"}}) # set only update matches key
+db.flightData.deleteMany({"marker":"ToBeDelete"})
+db.users.updateOne({},{$set:{hobbies:[{title:"stupid",freq:1},{title:"kill",freq:2}]}})
+db.users.updateOne({name:"manuel"},{$inc:{age:1},$set:{isSporty:false}}) # add one to age
+db.users.updateOne({name:"Chris"},{$min:{age:38}}) #only update it successfully when age in the data is bigger than 38. like min(38 and actual data)
+db.users.updateOne({name:"Chris"},{$max:{age:32}}) #only update it successfully when age in the data is lower than 38. like max(38 and actual data)
+db.users.updateOne({name:"manuel"},{$mul:{age:1},$set:{isSporty:false}}) # times 1 to the age
+db.users.updateMany({isSporty:true},{$unset:{phone:""}}) # remove phone
+db.users.updateMany({isSporty:true},{$set:{phone:"",hobbies:[]}})
+db.users.updateMany({},{$rename:{age:"TotalAge"}})
+db.users.updateMany({name:"quicksilver"},{$set:{phone:"",hobbies:[]}},{upsert:true})  #upsert a  record if it is not eixst
+db.users.updateMany({hobbies:{$elemMatch:{title:"Sports",frequency:{$gte:3}}}},{$set:{"hobbies.$.highFrequency":true}}) # add new field to the hobbies array
+db.users.updateMany({},{$inc:{"hobbies.$[].frequency":-1}}) # minus 1 for all frequency key val pair in each hobbies like hobbies:[{"a":"b","frequency:1},{}]
+db.users.updateMany({},{$inc:{"hobbies.$[el].goodfrequency":-1}}, {arrayFilters:[{"el.frequency":{$gt:2}}]})  # minus 1 for all frequency key which statisfy for el condition at the end val pair in each hobbies like hobbies:[{"a":"b","frequency:1},{}]
+db.users.updateOne({name:"superman"},{$push:{hobbies:{title:"sports",frequency:3}}}) # add element to array hobbies array
+db.users.updateOne({name:"superman"},{$push:{hobbies:{$each:[{title:"sports",frequency:3},{title:"lol",frequency:3}],$sort{frequency:-1},$slice:1}}}) # add element to array hobbies array
+db.users.updateOne({name:"superman"},{$pull:{hobbies:{title:"sports"}}}) # remove element to array hobbies array
+db.users.updateOne({name:"superman"},{$pop:{hobbies:1}}) # remove element to array hobbies array for the first 1 and last is -1
+db.users.updateOne({name:"superman"},{$addToSet:{hobbies:{title:"sports",frequency:3}}}) # add element to array hobbies array but not duplicate
+
+
+
 
 #Delete
 DeleteOne(filter,options)
@@ -33,10 +62,7 @@ deleteMany(filter,optoins)
 db.flightData.deleteOne({"name":"lol"})
 
 
-db.flightData.updateOne({"name":"lol"},{$set:{"marker":"delete"}})
-# Update all records
-db.flightData.updateMany({},{$set:{"marker":"ToBeDelete"}})
-db.flightData.deleteMany({"marker":"ToBeDelete"})
+
 
 # insertMany
 db.flightData.insertMany([{},{}])
@@ -45,6 +71,40 @@ db.flightData.insertMany([{},{}])
 db.flightData.find({"name":"lol"})
 # greater than 1000
 db.flightData.find({"name":{$gt:1000}})
+db.movies.find({"runtime":{$lt:42}})
+db.movies.find({"rating.average":{$gt:7}}).pretty()
+db.movies.find({age:{$exists:true}}).pretty() # age field exits
+db.movies.find({age:{$exists:age,$ne: null}}).pretty()  # age field exits and not null
+db.movies.find({phone:{$type:["double","string"]}}).pretty() # age field exits
+db.movies.find({summary:{$regex: /musical/}})  # reutrn all contain musical
+db.movies.find({summary:{$expr: {$gt: ["$volumne","$target"]}}})   # get records volumen greater then target
+db.movies.find({$expr: {$gt: [{$cond:{if: {$gte:["$volumne",190]},then:{$subtract["$volumne",10]},else:"$volumne"}},"$target"]}})
+db.movies.find({"rating.average":{$in:[10,8]}}).pretty()
+db.movies.find({$or:[{"rating.average":{$in:[10,8]}},{"rating.average":{$in:[1,3]}}]}).pretty()
+db.movies.find({"rating.average":{$in:[10,8]},genres:"Horror"}).pretty()
+db.movies.find({"genres":"Horror"}).count is same as db.movies.find({"genres":"Horror1","genres":"Horror"}).count. as the latter one overwrite the former one and by default is and operator.
+#ref https://www.mongodb.com/docs/v7.0/reference/operator/query/
+
+# query array
+db.user.find({"hobbies.title":"Sports"}).pretty()
+db.user.find({hobbies:{$size:3}})  # check for array size is 3 for hobbies
+db.user.find({genre:{$all:["action","thriller"]}})
+db.users.find({hobbies:{$elemMatch:{title:"Sports",frequency:{$gte:3}}}})
+
+#db.movies.find().next()
+const dataCursor=db.movies.find()
+dataCursor.next()
+dataCursor.hasNext()
+dataCursor.forEach(doc=>{printjson(doc)})
+db.movies.find().sort({"rating.average":1,runtime:-1}).pretty() # DESC
+db.movies.find().sort({"rating.average":1,runtime:-1}).skip(10).limit(10).pretty()
+db.movies.find({},{name:1,genres:1,runtime:1,"rating.average":1,"schedule.time":1,_id:0})
+db.movies.find({genres:"Drama"},{"genres.$":1})
+db.movies.find({genres:"Drama"},{genres:{elemMatch:{$eq:"Horror"}}}).pretty()
+db.movies.find({rating.average:"$gt:9"},{genres:{$slice:[1,1]}}).pretty()
+db.users.drop()
+db.dropDatabase()
+
 # this will overwrite exiting document
 db.flightData.update({_id:"123"},{"marker":"XXToBeDelete"})
 
@@ -61,3 +121,558 @@ db.passengers.find({},{name: 1,_id:0}).pretty()
 db.passengers.findOne({"name":1}).age
 # drill into nexted filter
 db.passengers.findOne({"name.age":"lol"})
+
+
+What to do if connection fail
+https://medium.com/@ansarimazhar7353/how-to-resolve-mongodb-compass-connection-error-connect-econnrefused-127-0-0-1-27017-66f2e74e961a
+
+db.companies.insertOne({insertAt: new Timestamp()})
+
+
+#check database stats
+db.stats()
+#check type
+typeof db.products
+
+
+
+# Data type
+Text ""
+Boolean true
+Number Integet(int32) NumberLong(int64) NumberDecimal
+ObjectId  ObjectId("das")
+ISODate  Timestamp(123)
+Embeded document
+Array
+
+
+
+var dsif=db.patients.findOne().diseaseSummary
+db.diseaseSummaries.findOne({_id: dsif})
+
+
+#  aggregate
+db.books.aggregate([{$lookup:{from:"authors",localField:"authors",foreignField:"_id",as:"creators"}}])
+# sql and aggregate
+{
+   $lookup:
+     {
+       from: <collection to join>,
+       localField: <field from the input documents>,
+       foreignField: <field from the documents of the "from" collection>,
+       as: <output array field>
+     }
+}
+
+SELECT *, (
+   SELECT ARRAY_AGG(*)
+   FROM <collection to join>
+   WHERE <foreignField> = <collection.localField>
+) AS <output array field>
+FROM collection;
+
+Project:
+db.users.insertMany([{name:"homelander",age:45,email:"homelander@xxx.com"},{name:"superman",age:35,email:"superman@xxx.com"}])
+db.posts.insertMany([{title:"I want to conquer the world",text:"I need to kill all stupid rich people",tag:["racist","stupid"],Creator: ObjectId('67676cedd83f64e7d44eeb86')},
+{title:"peace",text:"I need to keep peace",tag:["racist","stupid"],Creator: ObjectId('67676cedd83f64e7d44eeb87')}
+])
+
+db.posts.updateOne({"_id":ObjectId('67676dfdd83f64e7d44eeb88')},{$set:{"comment":[{text:"i like this post!",author:ObjectId('67676cedd83f64e7d44eeb86')}]}})
+
+db.createCollection("posts",{validator:{$jsonSchema:{bsonType:"object",required:["title,text,creator,comment"],
+properities:{
+    title:{bsonType:"string",description:"must be a string",},
+    text:{bsonType:"string",description:"must be a string",},
+    creator:{bsonType:"objectId",description:"must be a object id",},
+    comment:{bsonType:"array",description:"must be a array",
+    items:{bsonType:"object", required:["text","author"] properties:{text:{bsonType:"string"} , author:{bsonType:"objectId",description:"must be an object"}}}
+    },
+}
+}}});
+
+db.runCommand({colMod:'posts',
+{$jsonSchema:{bsonType:"object",required:["title,text,creator,comment"],
+properities:{
+    title:{bsonType:"string",description:"must be a string",},
+    text:{bsonType:"string",description:"must be a string",},
+    creator:{bsonType:"objectId",description:"must be a object id",},
+    comment:{bsonType:"array",description:"must be a array",
+    items:{bsonType:"object", required:["text","author"] properties:{text:{bsonType:"string"} , author:{bsonType:"objectId",description:"must be an object"}}}
+    },
+}
+}}
+validationAction:'warn'
+})
+
+db.dropDatabase()
+
+db.hobbies.insertMany([... {ordered:false}])
+# write concern
+db.persons.insertOne({"name":"superman"},writeConcern:{w:1,j:undefined,wtimeout:1})
+
+#bulk import
+mongoimport tv-shows.json -d movieData -c movies --jsonArray --drop
+mongoimport people.json -d contacts -c  contacts --jsonArray --drop
+
+## mongo db setting
+mongod --dbpath <file location for store>  --logpath <log file path>
+net start MongDB
+net stop MongDB
+net start MongDB-f ....cfg
+
+#https://www.mongodb.com/docs/v7.0/reference/operator/query/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Security
+Authentication
+Transport Encryption
+Encryption at rest
+auditing
+server and network config and setup
+
+use admin
+db.createUser({user:"",pwd:"",roles:["userAdminAnyDatabase]})
+db.auth('max','max')
+db.logout()
+db.updateUser("appdev",{roles:["readWrite",db:"blog"]})
+https://www.mongodb.com/docs/manual/reference/built-in-roles/
+
+
+
+
+# Performance
+Developer admin
+Indexes
+Fitting data json Schema
+efficient query
+
+DB Admin
+Hardware network
+Sharding
+Replica Sets
+
+db.createCollection("capped",{capped:true,size:1000,max:3}) # when exceeding delete records
+db.capped.find().sort({$natural:-1}) # order in ID Desc
+
+# Replica Sets
+client (shell, driver) --> write --> MongDB Server --> write --> primary node/secondary node
+
+# Sharding (Horizontal Scaling)
+Data is distributed across Shards
+Quries are run across all Shards
+Client --> monogos (Router) --> shard key --> mongod(Server/Shard)
+Option 1: Operation does not contain shard key and broadcast to all shards.
+Option 2: Operation does contains Shard key and directly send to right Shard.
+https://www.mongodb.com/docs/manual/sharding/
+
+# Transaction
+const session=db.getMongo().startSession()
+session.startTransaction()
+const usersCol=session.getDatabaase("blog").users
+const postsCol=session.getDatabaase("blog").posts
+db.users.find().pretty()
+usersCol.deleteOne({_id:ObjectId()})
+postsCol.deleteMany({_id:ObjectId()})
+session.commitTransaction()
+
+
+
+# Performance
+### explain can be queryPlanner(show summary for executed query)  executionStats(show detail summary for executed query winnplan and rejecte plan)
+### allPlanExection(show detailed summary for execyte query winning plan winning plaan decision processes)
+##### Examine millisconds proces time, ixscan, collscan, $ of keys in index examined, # of document examined and # of documents returned
+db.users.explain().find()
+db.users.explain("executionStats").find({name:"superman"})
+## create Indexe
+db.users.createIndex({name:1}) # ascending and descencing is -1
+db.contacts.createIndex({"dob.age":1})
+db.contacts.createIndex({city:1})
+db.contacts.explain("executionStats").find({name:"Thomas O'Conner"}).sort({gender:1})
+db.contacts.explain("executionStats").find({city:"North Tierramouth"}) # check  nReturned
+db.contacts.createIndex({city:1,name:1}) #compound index
+db.contacts.dropIndex({city:1,name:1})
+db.contacts.getIndexes()
+## check for duplicates
+db.contacts.createIndex({email:1},{unique:true})
+db.contacts.createIndex({email:1},{unique:true})
+db.contacts.find({email:"xx.com"}).count()
+db.contacts.createIndex({"dbo.age":1},{partialFilterExpression:{gender:"male"}})
+
+db.users.createIndex({email:1},{unique:true,partialFilterExpression:{email:{$exist:true}}}) # take out email is false for index otherwise it will error out.
+
+db.sessions.insertOne({data:"ss",createAt:new Date()})
+db.sessions.createIndex({craeteAt:1},{expireAfterSeconds:10}) # timeto live index
+db.sessions.dropIndex({createAt:1})
+#### index array
+db.contacts.drop()
+db.contacts.insertOne({name:"max",hobbies:["cooking","lol"],addresses:[{"street":"lol streeet"},{"street":"lol street2"}]})
+db.createIndex({hobbies:1})
+
+##### Create text index (only one but can be merged) it also does weights search in text
+db.products.insertMany([{title:"A Book",description:"This is an awesome book about a young artist!"},{title:"Red T-Shirt",description:"This T-Shirt is red and it's pretty awesome!"}])
+db.products.createIndex({description:"text"})
+db.products.createIndex({description:"text"})
+db.products.find({$text:{$search:"awesome"}},{score:{$meta:"textScore"}}).sort({sore:{$meta:"textScore"}})
+db.products.find({$text:{$search:"\"red book\""}})
+db.products.find({$text:{$search:"\"red book\"",$caseSensitive:true}},{score:{$meta:"textScore"}})
+db.products.dropIndex("description_text")
+db.products.createIndex({title:"text",description:"text"},{default_language:"english",weights:{title:1,description:10}})  #title_text_description_text
+
+db.products.insertMany([{title:"a ship",description:"floats perfectly!"}])
+db.products.find({$text:{$search:"awesome -t-shirt"}}) # minus mean exclude
+
+db.products.dropIndex("title_text_description_text")
+
+##### When building indexes foreground (collection is locked during index creation; faster) background (collection is accessible during index creation; slower)
+db.contacts.createIndex({email:1},{unique:true},{background:true})
+
+
+
+
+
+
+
+
+
+
+# Mongo DB data type
+integers(int32)  by default
+longs(int64)
+Doubles(64 bits)   by default
+High precision DOubles 128 bits
+//preferbably in string in () as the shell is in java and if putting numbe then it will be converted to 64 int first before reaching out to mongo db
+db.companies.deleteMany({})
+db.companies.insertOne({valuation: NumberInt("5000000000")})
+db.companies.insertOne({valuation: NumberInt("2147483648")})
+db.companies.insertOne({valuation: NumberInt("2147483647")})
+db.companies.insertOne({valuation: 2147483648})
+db.companies.insertOne({valuation: NumberLong("2147483648")})
+//
+[
+  { _id: ObjectId('67717363d83f64e7d44eeba5'), valuation: 705032704 },
+  { _id: ObjectId('67717363d83f64e7d44eeba6'), valuation: -2147483648 },
+  { _id: ObjectId('67717363d83f64e7d44eeba7'), valuation: 2147483647 }
+]
+//
+// if number insert is int and then update need to be int as well. Otherwise it will change data type
+db.accounts.insertOne({name:"Max",amount:NumberInt("10")})
+db.accounts.updateOne({},{$inc:{amount:10}})
+db.accounts.insertOne({name:"Max1",amount:"10"})
+db.accounts.updateOne({},{$inc:{amount:NumberInt("10")}})
+
+db.science.insertOne({a:0.3,b:0.1})
+db.science.aggregate([{$project:{result:{$subtract:["$a","$b"]}}}])
+db.science.deleteMany({})
+// 128   https://www.mongodb.com/docs/manual/tutorial/model-monetary-data/
+//https://stackoverflow.com/questions/618535/difference-between-decimal-float-and-double-in-net
+db.science.insertOne({a:NumberDecimal("0.3"),b:NumberDecimal("0.1")})
+db.science.aggregate([{$project:{result:{$subtract:["$a","$b"]}}}])
+db.accounts.insertOne({},{a:NumberDecimal("0.1")})
+
+
+# GeoJson data
+use awesomeplaces
+db.places.insertOne({name:"Califorina Academy of Sciences",location:{type:"Point",coordinates:[-122.4724356,37.7672544]}})
+db.places.find({location:{$near:{$geometry:{type:"Point",coordinates:[-122.472,37.767]},$maxDistance:500,$minDistance:10}}})
+db.places.createIndex({location:"2dsphere"})
+##### which point are inside the average
+db.places.insertOne({name:"Conservatory of Flowers",location:{type:"Point",coordinates:[-122.461578,37.7701756]}})
+db.places.insertOne({name:"Golden Gate Tennis Park",location:{type:"Point",coordinates:[-122.4593702,37.7705046]}})
+db.places.insertOne({name:"Nopa",location:{type:"Point",coordinates:[-122.4389058,37.7747415]}})
+
+const p1=[-122.4547,37.77473]
+const p2=[-122.45303,37.76641]
+const p3=[-122.51026,37.76411]
+const p4=[-122.51088,37.77131]
+
+db.places.find({location: {$geoWithin:  {$geometry:  {type: "Polygon", coordinates: [[p1,p2,p3,p4,p1]] }}}})
+
+db.areas.insertOne({name: "Golden Gate Park", area:  {type: "Polygon", coordinates: [[p1,p2,p3,p4,p1]] } })
+db.areas.createIndex({area:"2dsphere"})
+db.areas.find({area:{$geoIntersects:  {$geometry:{type:"Point",coordinates:[-122.49089,37.76992]}}}})
+
+db.areas.find({area:{$geoIntersects:  {$geometry:{type:"Point",coordinates:[-122.5102,37.7641]}}}})
+
+
+db.places.find({location: {$geoWithin: {$centerSphere: [[-122.46203,37.77286],  1/6378.1] }}})
+db.places.updateOne({"name": "Califorina Academy of Sciences" },{$set : {location: {type: "Point",coordinates:[-122.46636,37.77014]}} })
+
+# Aggregation Framework
+collection --> $match --> $sort -->  $group -->  $ project --> output
+# https://www.mongodb.com/docs/manual/core/aggregation-pipeline/
+db.orders.insertMany( [
+   { _id: 0, name: "Pepperoni", size: "small", price: 19,
+     quantity: 10, date: ISODate( "2021-03-13T08:14:30Z" ) },
+   { _id: 1, name: "Pepperoni", size: "medium", price: 20,
+     quantity: 20, date : ISODate( "2021-03-13T09:13:24Z" ) },
+   { _id: 2, name: "Pepperoni", size: "large", price: 21,
+     quantity: 30, date : ISODate( "2021-03-17T09:22:12Z" ) },
+   { _id: 3, name: "Cheese", size: "small", price: 12,
+     quantity: 15, date : ISODate( "2021-03-13T11:21:39.736Z" ) },
+   { _id: 4, name: "Cheese", size: "medium", price: 13,
+     quantity:50, date : ISODate( "2022-01-12T21:23:13.331Z" ) },
+   { _id: 5, name: "Cheese", size: "large", price: 14,
+     quantity: 10, date : ISODate( "2022-01-12T05:08:13Z" ) },
+   { _id: 6, name: "Vegan", size: "small", price: 17,
+     quantity: 10, date : ISODate( "2021-01-13T05:08:13Z" ) },
+   { _id: 7, name: "Vegan", size: "medium", price: 18,
+     quantity: 10, date : ISODate( "2021-01-13T05:10:13Z" ) }
+] )
+
+db.orders.aggregate( [
+   // Stage 1: Filter pizza order documents by pizza size
+   {
+      $match: { size: "medium" }
+   },
+   // Stage 2: Group remaining documents by pizza name and calculate total quantity
+   {
+      $group: { _id: "$name", totalQuantity: { $sum: "$quantity" } }
+   }
+] )
+
+
+db.persons.aggregate([
+  {$match: {gender: 'female'}},
+  {$group:{_id: { state:"$location.state"}, totalPersons: {$sum: 1}}},
+  {$sort: {totalPersons: -1}}
+])
+
+db.persons.aggregate([{$project: { _id:0, gender:1, fullName: {$concat: ["Hello", "World"]}}}])
+db.persons.aggregate([{$project: { _id:0, gender:1, fullName: {$concat: [
+  {$toUpper:{$substrCP: ["$name.first",0,1]}},{$substrCP: ["$name.first",1,{$subtract:[{$strLenCP: "$name.first"},1]}]},
+  " ", {$toUpper: "$name.last"}]}}}])
+
+//convert data to int from string
+db.persons.aggregate([
+  {$project: {
+    _id:0,name:1,email:1,  //0 is to exclude
+    birthdate: {$convert: {input: '$dob.date',to:'date'}},  // birthdate: {$toDate:'$dob.date'}
+    age:"$dob.age"
+    location:{
+      type:"Point",
+      coordinates: [
+        {$convert: {
+          input:'location.coordinates.longitude',to: 'double', onError:0
+        }},
+        {$convert: {
+          input:'location.coordinates.latitude',to: 'double', onError:0
+        }},
+      ]
+    }
+  }},
+  {$group: {_id: {birthYear: {$isoWeekYear: "$birthdate"}},numPersons: {$sum:1}   }},
+  {$sort:{numPersons: -1}}
+])
+// flattern the array into more document opposite to group
+db.friends.aggregate([
+    { $unwind:'$hobbies' }
+]).pretty()
+
+
+db.friends.aggregate([ { $group: { _id: { age: '$age' }, allHobbies: {$push: '$hobbies'}}}]).pretty()
+
+db.friends.aggregate([ { $group: { _id: { age: '$age' }, allHobbies: {$addToSet: '$hobbies'}}}]).pretty()
+
+// slice array
+db.friends.aggregate([
+    {
+        $project: {
+            _id: 0,
+            examScore: {
+                $slice: ['$examScores', 1]
+            }
+        }
+    }
+]).pretty()
+
+
+// $size calculate the length of an array
+
+> db.friends.aggregate([
+    {
+        $project: {
+            _id: 0,
+            numScores: {
+                $size: '$examScores'
+            }
+        }
+    }
+]).pretty()
+
+
+---------------------Using the Filter Operator-----------------
+
+// $filter Operator allows to filter out certain elements an array and only return the data according to condition
+// filter score so the greater than 60
+// here sc is a temporary variable for using condition
+// sc is a temporary variable of examScores but filter function executes over and over again all fields
+// so have to use two dollar sign
+// $cond --> condition
+// $$ refers ti number
+db.friends.aggregate([
+    {
+        $project: {
+            _id: 0,
+            scores: {
+                $filter: {
+                    input: '$examScores',
+                    as: 'sc',
+                    cond: {
+                        $gt: ['$$sc.score', 60]
+                    }
+                }
+            }
+        }
+    }
+]).pretty()
+
+
+// let's prepare a bucket stage
+// using bucket can create a different categories and filter
+
+// boundaries means range/levels like 0-18, 18-30,30-50, 50-80, 80-120
+// in every range first value execute not last value, 18-30 --> means with 18 but not exist 30
+> db.persons.aggregate([
+    {
+        $bucket: {
+            groupBy: '$dob.age',
+            boundaries: [0, 18, 30, 50, 80, 120],
+            output: {
+                numPersons: { $sum: 1 },
+                average: { $avg: '$dob.age' },
+            }
+        }
+    }
+]).pretty()
+
+
+
+
+-----------------Writing Pipeline Results Into a New Collection-----------
+
+// by getting the output we can store into the another Collection
+// can do work with the out stage
+db.persons.aggregate([
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      email: 1,
+      birthdate: { $toDate: '$dob.date' },
+      age: "$dob.age",
+      location: {
+        type: 'Point',
+        coordinates: [
+          {
+            $convert: {
+              input: '$location.coordinates.longitude',
+              to: 'double',
+              onError: 0.0,
+              onNull: 0.0
+            }
+          },
+          {
+            $convert: {
+              input: '$location.coordinates.latitude',
+              to: 'double',
+              onError: 0.0,
+              onNull: 0.0
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    $project: {
+      gender: 1,
+      email: 1,
+      location: 1,
+      birthdate: 1,
+      age: 1,
+      fullName: {
+        $concat: [
+          { $toUpper: { $substrCP: ['$name.first', 0, 1] } },
+          {
+            $substrCP: [
+              '$name.first',
+              1,
+              { $subtract: [{ $strLenCP: '$name.first' }, 1] }
+            ]
+          },
+          ' ',
+          { $toUpper: { $substrCP: ['$name.last', 0, 1] } },
+          {
+            $substrCP: [
+              '$name.last',
+              1,
+              { $subtract: [{ $strLenCP: '$name.last' }, 1] }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  { $out: "transformedPersons" }
+]).pretty();
+-----------------Working with the geoNear Stage------------------
+
+// first create an index into the transformedPersons Collection
+
+> db.transformedPersons.createIndex({location: '2dsphere'})
+// create geo location aggregation pipeline stages
+
+// have to specify and that is the distance field, because geoNear will actually also give us back the distance that is calculated between our point and the document
+
+// geoNear, it has to be the first element in the pipeline because it needs to use that index and the first pipeline element is the only element with direct access to the collection, other pipeline stages just get the output of the previous pipeline stage, this is the only element with direct access to the collection.
+
+// also can add query
+> db.transformedPersons.aggregate([
+    {
+        $geoNear: {
+            near: {
+                type: 'Point',
+                coordinates: [-18.4, -42.8]
+            },
+            maxDistance: 1000000,
+            $limit: 10,
+            query: { age: { $gt: 30 } },
+            distanceField: 'distance'
+        }
+    }
+]).pretty()
+
+// can also add multiple pipeline stages
+db.transformedPersons.aggregate([
+    {
+        $geoNear: {
+            near: {
+                type: 'Point',
+                coordinates: [-18.4, -42.8]
+            },
+            maxDistance: 1000000,
+            $limit: 10,
+            query: { age: { $gt: 30 } },
+            distanceField: 'distance'
+        }
+    },
+    { $project: { _id: 1, email: 0, birthdate: 0 } },
+    { $sort: { distanceField: 1 } },
+]).pretty()
+
+stitch is severless platform for building applications like authentication... cloud databse atlas, react to events and executte code in cloud.

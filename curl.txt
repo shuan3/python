@@ -1,0 +1,6 @@
+curl -v url   (debug)
+
+curl url -> get
+curl -d url  ->post
+curl -X PUT -d url   ->delete
+curl -o/-u url

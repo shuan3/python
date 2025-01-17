@@ -1,10 +1,39 @@
 echo "# test" >> README.md
+git log
+git status
 git init
 git add README.md
 git commit -m "first commit"
 git branch -M main
+git checkout -b <branch name>
+git branch <name>
+git merge <name>
 git remote add origin https://github.com/shuan3/test.git
 git push -u origin main
+git revert <id>
+git reset --hard <id>
+git reset --hard origin/branch name
+# delete branch->git branch -D <branch name>
+
+#another way
+git checkout develop
+git pull
+git checkout <branch name>
+git merge develop
+# solve any conflicts
+
+git remote add origin https://github.com/XXX/XX.git
+git remote set-url origin https://username@github.com/XXX/XX.git
+# put password or tokrn ->setting in github developer setting->presonal access token
+git push --set-upstream origin <branch name>
+
+
+git clone url
+
+
+vi  ~/.zshrc
+
+
 
 pre-commit run --all-files
 
@@ -23,6 +52,29 @@ pip config set global.cert C:Users/ID/XXX.cer
 pip config set global.index-url https://......
 pip config set global.extra-index-url http://....
 
+
+pip install -v poetry
+poetry init
+poetry update
+poetry install
+
+#create virtual env
+python -m venv luigienv
+virtualenv luigienv --python=python3.12
+source luigienv/bin/activate
+. luigienv/Scripts/activate
+pip install luigi
+luigi --module luigi_test.src.li_test1 HelloWorld --my-parameter 100 --local-scheduler
+PYTHONPATH='.' luigi --module li_test1 HelloWorld --local-scheduler
+pip install luigi
+luigi --module src.li_test1 HelloWorld --local-scheduler
+
+luigi --module src.li_test1 HelloWorld --scheduler-host localhost
+
+# to start server using luigid
+# https://luigi.readthedocs.io/en/stable/central_scheduler.html#the-luigid-server
+luigi --module src.li_test1 HelloWorld
+luigi --module src.top_artists AggregateArtists --date-interval 2012-06
 
 
 
