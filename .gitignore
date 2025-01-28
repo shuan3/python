@@ -1,3 +1,5 @@
 luigienv
 pyvenv.cfg
 Lib
+env
+__pycache__
