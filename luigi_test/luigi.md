@@ -150,3 +150,23 @@ package_path = package_name.__path__[0]
 for root, dirs, files in os.walk(package_path):
     for file in files:
         print(os.path.join(root, file))
+
+
+# Task
+External task -- check if file exist
+Example:
+from luigi import HdfsTarget
+class TaskA(ExternalTask):
+    env=env
+    def output(self):
+       return HdfsTarget(path='')
+
+wrapper taks allows you to create tasks that do not perform any work but instead wrap other tasks.
+class ResolvableWrapperTask(ForeeableTaskMixin,luigi.WrapperTask):
+    requires=self.requires()
+    if type(requires)==list:
+        return [requirement.output() for requirement in requires]
+    elif type(requires)==dict:
+        return [requirement.output() for requirement in requires.items()]
+    else:
+        return self.requires().output()
