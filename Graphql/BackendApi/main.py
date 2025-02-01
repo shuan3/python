@@ -6,6 +6,15 @@ from starlette_graphene3 import (
     make_playground_handler,
 )
 from BackendApi.data.data import employers_data, jobs_data
+from pymongo import MongoClient
+from BackendApi.mongodb import (
+    MONGODB_HOST,
+    MONGODB_PORT,
+    DB_NAME,
+    COLLECTION_NAME,
+    insert_data,
+)
+import json
 
 
 class EmployerObject(ObjectType):
@@ -70,3 +79,37 @@ app.mount(
     "/graphql-p",
     GraphQLApp(schema=schema, on_get=make_playground_handler()),
 )
+
+# @app.post("/get_employers/")
+# def get_employers():
+#     connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
+#     collection = connection[DB_NAME]["employers"]
+#     projects = collection.find()
+#     json_projects = []
+#     for project in projects:
+#         json_projects.append(project)
+#     json_projects = json.dumps(json_projects)
+#     connection.close()
+#     return json_projects
+
+
+@app.get("/employers/")
+async def get_employers():
+
+    insert_data(employers_data, "employers")
+    employers = []
+    for employer in MongoClient(MONGODB_HOST, MONGODB_PORT)[DB_NAME][
+        "employers"
+    ].find():
+        employers.append(
+            {
+                "id": str(employer["_id"]),
+                "name": employer["name"],
+                "contact_email": employer["contact_email"],
+                "industry": employer["industry"],
+            }
+        )
+    return employers
+
+
+# mongodb://localhost:27017/
