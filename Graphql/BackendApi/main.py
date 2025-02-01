@@ -112,4 +112,20 @@ async def get_employers():
     return employers
 
 
+@app.get("/jobs/")
+async def get_jobs():
+    insert_data(jobs_data, "jobs")
+    jobs = []
+    for job in MongoClient(MONGODB_HOST, MONGODB_PORT)[DB_NAME]["jobs"].find():
+        jobs.append(
+            {
+                "id": str(job["_id"]),
+                "title": job["title"],
+                "description": job["description"],
+                "employer_id": job["employer_id"],
+            }
+        )
+    return jobs
+
+
 # mongodb://localhost:27017/
