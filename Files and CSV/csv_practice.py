@@ -3,7 +3,6 @@
 # google sheets python api
 import pandas as pd
 
-import csv
 
 # data=open('Files and CSV\example.csv',encoding='utf-8')
 

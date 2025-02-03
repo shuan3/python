@@ -11,10 +11,8 @@ from BackendApi.mongodb import (
     MONGODB_HOST,
     MONGODB_PORT,
     DB_NAME,
-    COLLECTION_NAME,
     insert_data,
 )
-import json
 
 
 class EmployerObject(ObjectType):

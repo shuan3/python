@@ -12,9 +12,6 @@ math.inf
 math.nan
 
 
-from math import pi
-
-
 import random
 
 # randomly choose between 0 and 100

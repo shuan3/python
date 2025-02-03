@@ -3,7 +3,6 @@
 # pip insall bs4
 
 import requests
-import lxml
 import bs4
 
 # check if access is allowed

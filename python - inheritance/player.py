@@ -52,7 +52,7 @@ class Person:
 class Player(Person):
     def __init__(self, name, age, city, level, *args, **kwargs):
         super().__init__(name, age, city, *args, **kwargs)
-        print(f"Player init child class ")
+        print("Player init child class ")
         print(*args, **kwargs)
         a = kwargs.get("a", 0)
         print(f"a is {a}", args[0])
@@ -61,7 +61,7 @@ class Player(Person):
     def introduction(self):
         print("Player introduction")
         # return super().introduction()
-        return f"lol"
+        return "lol"
 
 
 player1 = Player("Joe", 45, "Londo", 10, 1, 1, {"a": 1})

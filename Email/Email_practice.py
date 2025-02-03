@@ -19,6 +19,6 @@ from_address = email
 to_address = email
 subject = input("ss")
 message = input("ss")
-msg = f"Subject: " + subject + "\n" + message
+msg = "Subject: " + subject + "\n" + message
 smtp_object.sendmail(from_address, to_address, msg)
 smtp_object.quit()

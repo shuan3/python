@@ -1,5 +1,4 @@
 import luigi
-from luigi import Task
 
 
 class MyTask1(luigi.Task):

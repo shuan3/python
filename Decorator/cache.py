@@ -21,10 +21,6 @@ def timer(func):
 # print(factorial(10))
 
 
-import functools
-import time
-
-
 @timer
 @functools.cache
 def slow_function(n):

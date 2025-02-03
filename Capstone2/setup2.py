@@ -1,6 +1,6 @@
 # from card_utils import Player, Card, Deck,playing
 import random
-from constants import values, ranks, suits, playing
+from constants import values, ranks, suits
 
 
 class Card:

@@ -1,7 +1,4 @@
 from pymongo import MongoClient
-from bson import json_util
-import json
-from BackendApi.data.data import employers_data, jobs_data
 
 MONGODB_HOST = "localhost"
 MONGODB_PORT = 27017

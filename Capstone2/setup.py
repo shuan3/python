@@ -1,4 +1,4 @@
-from card_utils import Player, Card, Deck
+from card_utils import Player, Deck
 
 one = "super_man"
 two = "homelander"

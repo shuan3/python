@@ -1,4 +1,3 @@
-import random
 import numpy as np
 
 print(np.random.choice(5, 3, p=[0.1, 0, 0.3, 0.6, 0]))

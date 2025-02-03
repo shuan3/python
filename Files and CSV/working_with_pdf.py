@@ -6,7 +6,6 @@ import pandas as pd
 
 # Read pdf into list of DataFrame
 # dfs = tabula.read_pdf("test.pdf", pages='all')
-from tabula.io import read_pdf
 
 # Read remote pdf into list of DataFrame
 
