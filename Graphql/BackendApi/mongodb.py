@@ -18,6 +18,14 @@ COLLECTION_NAME = "employers"
 #     return json_projects
 
 # getDatas()
+def update_data(data, collection_name):
+    connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
+    collection = connection[DB_NAME][collection_name]
+    if data["employer_id"]:
+        collection.delete_one({"employer_id": data["employer_id"]})
+        collection.insert_one(data)
+    connection.close()
+    print(f"Updated {data['employer_id']} records in {collection_name}")
 
 
 def insert_data(data, collection_name):
@@ -37,4 +45,4 @@ def insert_data(data, collection_name):
 # employers_collection.insert_many(employers_data)
 # jobs_collection.insert_many(jobs_data)
 
-print("done")
+# print("done")
