@@ -17,9 +17,9 @@ uv run pytest
 ## check python
 uv run python --version
 
-## change python version -> go to pyproject.toml change python version and run below
+## changuve python version -> go to pyproject.toml change python version and run below
 uv sync
-
+## Adding new packages
 uv add jupyter pandas  fastapi
 uv run jupyer lab
 

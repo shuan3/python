@@ -170,3 +170,11 @@ class ResolvableWrapperTask(ForeeableTaskMixin,luigi.WrapperTask):
         return [requirement.output() for requirement in requires.items()]
     else:
         return self.requires().output()
+
+
+
+
+# using uv
+uv add setuptools luigi
+. luigienv/Scripts/activate
+uv run 'd:/Github/test/luigi_test/li_test2.py' --local-scheduler

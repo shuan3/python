@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "luigi>=3.6.0",
+    "setuptools>=75.8.0",
     "typer>=0.15.1",
 ]
 

@@ -20,8 +20,6 @@ class MyTask2(luigi.Task):
 
 # if __name__ == '__main__':
 #     luigi.build([MyTask1(x=10), MyTask2(x=15, z=3)])
-
-
 if __name__ == "__main__":
     luigi.build([MyTask1(x=1)], workers=5, local_scheduler=False)
 #  print("done")
